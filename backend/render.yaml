@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: agrosense-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm ci
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: FRONTEND_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: USE_DATABASE
+        value: "true"
+      - key: MQTT_ENABLED
+        value: "true"
+      - key: MQTT_URL
+        sync: false
+      - key: MQTT_TOPIC
+        sync: false

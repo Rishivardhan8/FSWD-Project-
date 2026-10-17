@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>AgroSense Admin Dashboard</title>
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+
+  <style>
+    body {
+      margin: 0;
+      background: #f4f7f5;
+      font-family: Arial, sans-serif;
+      color: #26352b;
+    }
+
+    .sidebar {
+      min-height: 100vh;
+      background: #14532d;
+      color: white;
+      padding: 28px 20px;
+    }
+
+    .sidebar h3 {
+      font-weight: bold;
+      margin-bottom: 35px;
+    }
+
+    .sidebar p {
+      color: #d1fae5;
+      font-size: 14px;
+    }
+
+    .main-content {
+      padding: 30px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+      height: 100%;
+    }
+
+    .stat-card h6 {
+      color: #6b7c70;
+      margin-bottom: 15px;
+    }
+
+    .stat-card h2 {
+      font-weight: bold;
+      color: #198754;
+    }
+
+    .section-card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 25px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .table-responsive {
+      margin-top: 20px;
+    }
+
+    th {
+      white-space: nowrap;
+      background: #edf5ef !important;
+    }
+
+    td {
+      vertical-align: middle;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .inactive {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .message {
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        min-height: auto;
+      }
+
+      .main-content {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container-fluid">
+  <div class="row">
+
+    <aside class="col-md-2 sidebar">
+      <h3>🌱 AgroSense</h3>
+
+      <p>ADMINISTRATION</p>
+
+      <div class="mt-4">
+        <strong>Dashboard</strong>
+      </div>
+
+      <div class="mt-4">
+        User Management
+      </div>
+
+      <div class="mt-4">
+        Login Activity
+      </div>
+
+      <hr class="mt-5">
+
+      <button
+        id="logoutButton"
+        class="btn btn-outline-light w-100"
+      >
+        Logout
+      </button>
+    </aside>
+
+    <main class="col-md-10 main-content">
+
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+          <h2>Admin Dashboard</h2>
+          <p class="text-muted">
+            Manage AgroSense users and monitor application access.
+          </p>
+        </div>
+
+        <button id="refreshButton" class="btn btn-success">
+          ↻ Refresh Data
+        </button>
+      </div>
+
+      <div id="message" class="message" role="status">
+        Loading dashboard data...
+      </div>
+
+      <!-- Statistics -->
+      <div class="row g-4 mt-2">
+
+        <div class="col-sm-6 col-xl-4">
+          <div class="stat-card">
+            <h6>Total Registered Users</h6>
+            <h2 id="totalUsers">—</h2>
+          </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-4">
+          <div class="stat-card">
+            <h6>Administrator Accounts</h6>
+            <h2 id="adminUsers">—</h2>
+          </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-4">
+          <div class="stat-card">
+            <h6>Active Accounts</h6>
+            <h2 id="activeUsers">—</h2>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- User Management -->
+      <section class="section-card" id="usersSection">
+        <h4>👥 Registered Users</h4>
+
+        <p class="text-muted">
+          Accounts registered in the AgroSense database.
+        </p>
+
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Role</th>
+    <th>Status</th>
+    <th>Last Login</th>
+    <th>Action</th>
+  </tr>
+</thead>
+
+            <tbody id="usersTable">
+              <tr>
+                <td colspan="7" class="text-center">
+                  Loading users...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Login Activity -->
+      <section class="section-card" id="activitySection">
+        <h4>🔐 Login Activity</h4>
+
+        <p class="text-muted">
+          Recent activity recorded by the application.
+        </p>
+
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Activity</th>
+                <th>Date & Time</th>
+              </tr>
+            </thead>
+
+            <tbody id="activityTable">
+              <tr>
+                <td colspan="4" class="text-center">
+                  Loading activity...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  const API_URL = "http://localhost:5000";
+
+  const token = localStorage.getItem("agrosense_token");
+
+  const message = document.getElementById("message");
+
+  function showMessage(text, isError = false) {
+    message.textContent = text;
+    message.className =
+      "message " + (isError ? "text-danger" : "text-success");
+  }
+
+  function formatDate(value) {
+    if (!value) return "Never";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) return "—";
+
+    return date.toLocaleString();
+  }
+
+  function createCell(value) {
+    const cell = document.createElement("td");
+    cell.textContent =
+      value === null || value === undefined || value === ""
+        ? "—"
+        : String(value);
+
+    return cell;
+  }
+
+  async function apiRequest(path) {
+    const response = await fetch(`${API_URL}${path}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        localStorage.removeItem("agrosense_token");
+      }
+
+      throw new Error(
+        result.message || `Request failed (${response.status}).`
+      );
+    }
+
+    return result;
+  }
+
+  function renderUsers(users) {
+    const table = document.getElementById("usersTable");
+    table.replaceChildren();
+
+    if (!users.length) {
+      const row = document.createElement("tr");
+      const cell = createCell("No registered users found.");
+      cell.colSpan = 7;
+      cell.className = "text-center";
+      row.appendChild(cell);
+      table.appendChild(row);
+      return;
+    }
+
+    users.forEach(user => {
+      const row = document.createElement("tr");
+
+      row.appendChild(createCell(user.id));
+      row.appendChild(createCell(user.name));
+      row.appendChild(createCell(user.email));
+      row.appendChild(createCell(user.role));
+
+      const statusCell = document.createElement("td");
+      const badge = document.createElement("span");
+
+      const isActive = user.is_active !== false;
+
+      badge.className = isActive
+        ? "status"
+        : "status inactive";
+
+      badge.textContent = isActive ? "Active" : "Inactive";
+
+      statusCell.appendChild(badge);
+      row.appendChild(statusCell);
+
+      row.appendChild(createCell(formatDate(user.last_login)));
+      // Action column
+const actionCell = document.createElement("td");
+
+if (user.role === "admin") {
+  actionCell.textContent = "Protected";
+} else {
+  const removeButton = document.createElement("button");
+
+  removeButton.textContent = "Remove";
+  removeButton.className = "btn btn-sm btn-danger";
+
+  removeButton.addEventListener("click", async () => {
+    const confirmed = window.confirm(
+      `Are you sure you want to remove ${user.name} (${user.email})?`
+    );
+
+    if (!confirmed) return;
+
+    removeButton.disabled = true;
+    removeButton.textContent = "Removing...";
+
+    try {
+      const response = await fetch(
+        `${API_URL}/api/admin/users/${encodeURIComponent(user.id)}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(
+          result.message || "Failed to remove user."
+        );
+      }
+
+      alert(result.message || "User removed successfully.");
+
+      await loadDashboard();
+    } catch (error) {
+      alert(error.message || "Unable to remove user.");
+
+      removeButton.disabled = false;
+      removeButton.textContent = "Remove";
+    }
+  });
+
+  actionCell.appendChild(removeButton);
+}
+
+row.appendChild(actionCell);
+
+      table.appendChild(row);
+    });
+
+    document.getElementById("totalUsers").textContent =
+      users.length;
+
+    document.getElementById("adminUsers").textContent =
+      users.filter(user => user.role === "admin").length;
+
+    document.getElementById("activeUsers").textContent =
+      users.filter(user => user.is_active !== false).length;
+  }
+
+  function renderActivities(activities) {
+    const table = document.getElementById("activityTable");
+    table.replaceChildren();
+
+    if (!activities.length) {
+      const row = document.createElement("tr");
+      const cell = createCell("No activity records found.");
+      cell.colSpan = 4;
+      cell.className = "text-center";
+      row.appendChild(cell);
+      table.appendChild(row);
+      return;
+    }
+
+    activities.forEach(activity => {
+      const row = document.createElement("tr");
+
+      row.appendChild(createCell(activity.user_name));
+      row.appendChild(createCell(activity.email));
+      row.appendChild(createCell(activity.activity));
+      row.appendChild(createCell(formatDate(activity.created_at)));
+
+      table.appendChild(row);
+    });
+  }
+
+  async function loadDashboard() {
+    if (!token) {
+      showMessage(
+        "No login token found. Return to the login page and sign in as an administrator.",
+        true
+      );
+      return;
+    }
+
+    showMessage("Loading data from the database...");
+
+    try {
+      const [usersResult, activityResult] = await Promise.all([
+        apiRequest("/api/admin/users"),
+        apiRequest("/api/admin/activity")
+      ]);
+
+      renderUsers(usersResult.users || []);
+      renderActivities(activityResult.activities || []);
+
+      showMessage("Dashboard data loaded successfully.");
+
+    } catch (error) {
+      showMessage(
+        error.message || "Unable to load dashboard data.",
+        true
+      );
+    }
+  }
+
+  document
+    .getElementById("refreshButton")
+    .addEventListener("click", loadDashboard);
+
+  document
+    .getElementById("logoutButton")
+    .addEventListener("click", () => {
+      localStorage.removeItem("agrosense_token");
+      window.location.href = "/";
+    });
+
+  loadDashboard();
+</script>
+
+</body>
+</html>
